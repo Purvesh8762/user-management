@@ -1,3 +1,4 @@
+com\usermanagement\app\config\SecurityConfig.class
 com\usermanagement\app\service\AuthUserService.class
 com\usermanagement\app\exception\GlobalExceptionHandler.class
 com\usermanagement\app\dto\LoginRequestDTO.class

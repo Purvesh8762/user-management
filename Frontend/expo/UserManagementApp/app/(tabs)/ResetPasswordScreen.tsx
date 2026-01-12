@@ -10,19 +10,33 @@ import {
 import { useState } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
 
+// Backend API URL
 const API =
   Platform.OS === "web"
     ? "http://localhost:8082/api"
     : "http://10.193.30.67:8082/api";
 
 export default function ResetPasswordScreen() {
+  // Get email from previous screen
   const params = useLocalSearchParams<{ email?: string }>();
   const email = params.email ?? "";
 
-  const [otp, setOtp] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  // Input states
+  const [otp, setOtp] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Eye icon states
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const router = useRouter();
+
+  // Check if passwords match
+  const passwordsMatch =
+    password.length > 0 &&
+    confirmPassword.length > 0 &&
+    password === confirmPassword;
 
   const resetPassword = async () => {
     if (!email) {
@@ -31,8 +45,13 @@ export default function ResetPasswordScreen() {
       return;
     }
 
-    if (!otp.trim() || !password.trim()) {
-      Alert.alert("Error", "All fields required");
+    if (!otp.trim() || !password.trim() || !confirmPassword.trim()) {
+      Alert.alert("Validation Error", "All fields are required");
+      return;
+    }
+
+    if (!passwordsMatch) {
+      Alert.alert("Validation Error", "Passwords do not match");
       return;
     }
 
@@ -67,29 +86,83 @@ export default function ResetPasswordScreen() {
     <View style={styles.page}>
       <Text style={styles.title}>Reset Password</Text>
 
-      <TextInput
-        placeholder="Enter OTP"
-        style={styles.input}
-        value={otp}
-        onChangeText={(v) => setOtp(v)}
-        keyboardType="numeric"
-      />
+      {/* CARD BOX */}
+      <View style={styles.card}>
+        {/* OTP */}
+        <TextInput
+          placeholder="Enter OTP"
+          style={styles.input}
+          value={otp}
+          onChangeText={setOtp}
+          keyboardType="numeric"
+        />
 
-      <TextInput
-        placeholder="New Password"
-        style={styles.input}
-        secureTextEntry
-        value={password}
-        onChangeText={(v) => setPassword(v)}
-      />
+        {/* New Password */}
+        <View style={styles.passwordBox}>
+          <TextInput
+            placeholder="New Password"
+            style={styles.passwordInput}
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Text style={styles.eye}>{showPassword ? "🙈" : "👁️"}</Text>
+          </TouchableOpacity>
+        </View>
 
-      <TouchableOpacity style={styles.btn} onPress={resetPassword}>
-        <Text style={styles.btnText}>Reset Password</Text>
-      </TouchableOpacity>
+        {/* Confirm Password */}
+        <View style={styles.passwordBox}>
+          <TextInput
+            placeholder="Re-enter Password"
+            style={styles.passwordInput}
+            secureTextEntry={!showConfirmPassword}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+          />
+          <TouchableOpacity
+            onPress={() =>
+              setShowConfirmPassword(!showConfirmPassword)
+            }
+          >
+            <Text style={styles.eye}>
+              {showConfirmPassword ? "🙈" : "👁️"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Password match indicator */}
+        {password.length > 0 && confirmPassword.length > 0 && (
+          <Text
+            style={{
+              color: passwordsMatch ? "green" : "red",
+              marginBottom: 10,
+              textAlign: "center",
+            }}
+          >
+            {passwordsMatch
+              ? "Passwords match"
+              : "Passwords do not match"}
+          </Text>
+        )}
+
+        {/* Reset Button */}
+        <TouchableOpacity
+          style={[
+            styles.btn,
+            { opacity: passwordsMatch ? 1 : 0.5 },
+          ]}
+          onPress={resetPassword}
+          disabled={!passwordsMatch}
+        >
+          <Text style={styles.btnText}>Reset Password</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
+// UI styles
 const styles = StyleSheet.create({
   page: {
     flex: 1,
@@ -102,18 +175,41 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
   },
+  card: {
+    width: "85%",
+    backgroundColor: "#e9f7fb",
+    padding: 20,
+    borderRadius: 12,
+  },
   input: {
-    width: "80%",
     backgroundColor: "white",
-    padding: 10,
     borderRadius: 6,
+    padding: 10,
     marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  passwordBox: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    borderRadius: 6,
+    alignItems: "center",
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  passwordInput: {
+    flex: 1,
+    padding: 10,
+  },
+  eye: {
+    fontSize: 18,
   },
   btn: {
     backgroundColor: "#1e90ff",
     padding: 12,
-    borderRadius: 6,
-    width: "80%",
+    borderRadius: 8,
   },
   btnText: {
     color: "white",

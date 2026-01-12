@@ -11,19 +11,26 @@ public class LoginUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    // Admin email (unique and required)
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
 
+    // Admin name
+    @Column(nullable = false, length = 100)
     private String name;
 
+    // Encrypted password
+    @Column(nullable = false)
     private String password;
 
+    // OTP for password reset
     @Column(length = 6)
     private String otp;
 
+    // OTP expiry time
     private LocalDateTime otpExpiry;
 
-    // ---- Getters & Setters ----
+    //Getters and Setters
 
     public Long getId() {
         return id;
@@ -53,6 +60,7 @@ public class LoginUser {
         return password;
     }
 
+    // Password is always stored in encrypted format
     public void setPassword(String password) {
         this.password = password;
     }

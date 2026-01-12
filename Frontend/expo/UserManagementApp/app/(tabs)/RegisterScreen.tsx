@@ -10,12 +10,13 @@ import {
 import { useState } from "react";
 import { useRouter } from "expo-router";
 
+// Backend API URL (web vs mobile)
 const API =
   Platform.OS === "web"
     ? "http://localhost:8082/api"
     : "http://10.193.30.67:8082/api";
 
-// Works for web + mobile
+// Works for web + mobile alert
 const showAlert = (title: string, msg: string) => {
   if (Platform.OS === "web") {
     window.alert(title + "\n" + msg);
@@ -27,25 +28,30 @@ const showAlert = (title: string, msg: string) => {
 export default function RegisterScreen() {
   const router = useRouter();
 
+  // Input states
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  // Handles register button click
   const register = async () => {
     const n = name.trim();
     const e = email.trim();
     const p = password.trim();
 
+    // Validation: empty fields
     if (!n || !e || !p) {
       showAlert("Error", "All fields are required");
       return;
     }
 
+    // Validation: email format
     if (!e.includes("@")) {
       showAlert("Error", "Enter valid email");
       return;
     }
 
+    // Password strength rule
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
 
@@ -58,6 +64,7 @@ export default function RegisterScreen() {
     }
 
     try {
+      // Call backend register API
       const res = await fetch(`${API}/register`, {
         method: "POST",
         headers: {
@@ -72,6 +79,7 @@ export default function RegisterScreen() {
 
       const text = await res.text();
 
+      // If registration success
       if (res.ok) {
         showAlert("Success", "Registration successful");
         router.replace("/(tabs)/LoginScreen");
@@ -88,6 +96,7 @@ export default function RegisterScreen() {
       <Text style={styles.title}>Register</Text>
 
       <View style={styles.card}>
+        {/* Name input */}
         <TextInput
           placeholder="Name"
           style={styles.input}
@@ -95,6 +104,7 @@ export default function RegisterScreen() {
           onChangeText={(v) => setName(v)}
         />
 
+        {/* Email input */}
         <TextInput
           placeholder="Email"
           style={styles.input}
@@ -104,6 +114,7 @@ export default function RegisterScreen() {
           keyboardType="email-address"
         />
 
+        {/* Password input */}
         <TextInput
           placeholder="Password"
           style={styles.input}
@@ -112,10 +123,12 @@ export default function RegisterScreen() {
           onChangeText={(v) => setPassword(v)}
         />
 
+        {/* Register button */}
         <TouchableOpacity style={styles.btn} onPress={register}>
           <Text style={styles.btnText}>REGISTER</Text>
         </TouchableOpacity>
 
+        {/* Navigate to login */}
         <TouchableOpacity
           onPress={() => router.replace("/(tabs)/LoginScreen")}
         >
@@ -126,6 +139,7 @@ export default function RegisterScreen() {
   );
 }
 
+// UI styles
 const styles = StyleSheet.create({
   page: {
     flex: 1,

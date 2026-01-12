@@ -15,24 +15,36 @@ public class ManagedUserService {
         this.repo = repo;
     }
 
-    // Add user for a specific admin
+
+    // Add a new user under a specific admin
     public ManagedUser addUser(String name, String email, Long adminId){
 
-        ManagedUser u = new ManagedUser();
-        u.setName(name);
-        u.setEmail(email);
-        u.setAdminId(adminId);
+        // Optional check to avoid duplicate email
+        if(repo.findByEmail(email).isPresent()){
+            throw new RuntimeException("User email already exists");
+        }
 
-        return repo.save(u);
+        ManagedUser user = new ManagedUser();
+        user.setName(name);
+        user.setEmail(email);
+        user.setAdminId(adminId);
+
+        return repo.save(user);
     }
 
-    // List users for a specific admin
+    // Fetch all users under an admin
     public List<ManagedUser> listUsers(Long adminId){
         return repo.findByAdminId(adminId);
     }
 
-    // Delete user
+
+    // Delete user by id
     public void deleteUser(Long id){
+
+        if(!repo.existsById(id)){
+            throw new RuntimeException("User not found");
+        }
+
         repo.deleteById(id);
     }
 }

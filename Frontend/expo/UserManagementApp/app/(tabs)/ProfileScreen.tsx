@@ -10,8 +10,11 @@ import { getLoginEmail } from "../utils/storage";
 
 export default function ProfileScreen() {
   const router = useRouter();
+
+  // Store logged-in admin email
   const [email, setEmail] = useState<string | null>(null);
 
+  // Load email when screen opens
   useEffect(() => {
     load();
   }, []);
@@ -27,7 +30,7 @@ export default function ProfileScreen() {
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() =>
-            router.replace("/(tabs)/UserListScreen?openSidebar=true")
+            router.replace("/(tabs)/UserListScreen")
           }
         >
           <Text style={styles.back}>←</Text>
@@ -37,18 +40,21 @@ export default function ProfileScreen() {
 
       {/* BODY */}
       <View style={styles.body}>
+        {/* Avatar with first letter of email */}
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>
-            {email?.charAt(0).toUpperCase()}
+            {(email || "U").charAt(0).toUpperCase()}
           </Text>
         </View>
 
+        {/* Display email */}
         <Text style={styles.email}>{email}</Text>
       </View>
     </View>
   );
 }
 
+// UI styles
 const styles = StyleSheet.create({
   page: { flex: 1, backgroundColor: "#9fd3d6" },
 

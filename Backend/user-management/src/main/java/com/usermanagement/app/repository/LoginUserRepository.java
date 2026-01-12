@@ -9,9 +9,10 @@ import java.util.Optional;
 @Repository
 public interface LoginUserRepository extends JpaRepository<LoginUser, Long> {
 
+    // Find user by email (used in login, OTP, reset password)
     Optional<LoginUser> findByEmail(String email);
 
-    Optional<LoginUser> findByEmailAndPassword(String email, String password);
-
+    // Check if email already exists during registration
     boolean existsByEmail(String email);
+
 }

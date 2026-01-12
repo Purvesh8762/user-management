@@ -17,9 +17,13 @@ import {
   getAdminId,
 } from "../utils/storage";
 
+// Backend API
 const API = "http://10.193.30.67:8082/api";
+
+// Screen width for sidebar animation
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
+// User object type
 type User = {
   id: number;
   name: string;
@@ -28,19 +32,23 @@ type User = {
 
 export default function UserListScreen() {
   const router = useRouter();
+
+  // Sidebar animation value
   const slideAnim = useRef(new Animated.Value(-SCREEN_WIDTH)).current;
 
+  // UI states
   const [showSidebar, setShowSidebar] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
   const [users, setUsers] = useState<User[]>([]);
 
-  // 🔄 Reload users whenever screen is focused
+  // Reload users whenever screen is focused
   useFocusEffect(
     useCallback(() => {
       loadUsers();
     }, [])
   );
 
+  // Load users from backend
   const loadUsers = async () => {
     const adminId = await getAdminId();
 
@@ -52,12 +60,15 @@ export default function UserListScreen() {
     try {
       const res = await fetch(`${API}/users/list/${adminId}`);
       const data = await res.json();
+
+      // Ensure array response
       setUsers(Array.isArray(data) ? data : []);
     } catch {
       Alert.alert("Error", "Unable to load users");
     }
   };
 
+  // Confirm delete popup
   const confirmDelete = (id: number) => {
     Alert.alert(
       "Delete User",
@@ -69,17 +80,21 @@ export default function UserListScreen() {
     );
   };
 
+  // Delete user API call
   const deleteUser = async (id: number) => {
     try {
       await fetch(`${API}/users/delete/${id}`, {
         method: "DELETE",
       });
+
+      Alert.alert("Success", "User deleted successfully");
       loadUsers();
     } catch {
       Alert.alert("Error", "Unable to delete user");
     }
   };
 
+  // Open sidebar
   const openSidebar = async () => {
     const e = await getLoginEmail();
     setEmail(e);
@@ -92,6 +107,7 @@ export default function UserListScreen() {
     }).start();
   };
 
+  // Close sidebar
   const closeSidebar = () => {
     Animated.timing(slideAnim, {
       toValue: -SCREEN_WIDTH,
@@ -100,6 +116,7 @@ export default function UserListScreen() {
     }).start(() => setShowSidebar(false));
   };
 
+  // Logout admin
   const logout = async () => {
     await clearLoginEmail();
     router.replace("/(tabs)/LoginScreen");
@@ -152,8 +169,10 @@ export default function UserListScreen() {
       {/* SIDEBAR */}
       {showSidebar && (
         <>
+          {/* Dark overlay */}
           <Pressable style={styles.overlay} onPress={closeSidebar} />
 
+          {/* Sliding sidebar */}
           <Animated.View style={[styles.sidebar, { left: slideAnim }]}>
             <View style={styles.profileBox}>
               <View style={styles.avatar}>
@@ -164,6 +183,7 @@ export default function UserListScreen() {
               <Text style={styles.profileEmail}>{email}</Text>
             </View>
 
+            {/* Profile */}
             <TouchableOpacity
               style={styles.menuItem}
               onPress={() => {
@@ -174,6 +194,7 @@ export default function UserListScreen() {
               <Text style={styles.menuText}>👤 Profile</Text>
             </TouchableOpacity>
 
+            {/* Register another account */}
             <TouchableOpacity
               style={styles.menuItem}
               onPress={() => {
@@ -184,6 +205,7 @@ export default function UserListScreen() {
               <Text style={styles.menuText}>➕ Add Another Account</Text>
             </TouchableOpacity>
 
+            {/* Logout */}
             <TouchableOpacity style={styles.menuItem} onPress={logout}>
               <Text style={[styles.menuText, { color: "red" }]}>
                 🚪 Logout
@@ -196,6 +218,7 @@ export default function UserListScreen() {
   );
 }
 
+// UI styles
 const styles = StyleSheet.create({
   page: { flex: 1, backgroundColor: "#9fd3d6" },
 

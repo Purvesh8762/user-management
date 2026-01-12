@@ -10,14 +10,19 @@ public class ManagedUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // User name
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(unique = true)
+    // User email (unique)
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    private Long adminId;   // which admin created this user
+    // Admin who created this user
+    @Column(nullable = false)
+    private Long adminId;
 
-    // ---- Getters & Setters ----
+    // Getters and Setters
 
     public Long getId() {
         return id;
