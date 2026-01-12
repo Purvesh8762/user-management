@@ -1,0 +1,12 @@
+com\usermanagement\app\service\AuthUserService.class
+com\usermanagement\app\exception\GlobalExceptionHandler.class
+com\usermanagement\app\dto\LoginRequestDTO.class
+com\usermanagement\app\entity\ManagedUser.class
+com\usermanagement\app\entity\LoginUser.class
+com\usermanagement\app\controller\AuthController.class
+com\usermanagement\app\UserManagementApplication.class
+com\usermanagement\app\repository\LoginUserRepository.class
+com\usermanagement\app\repository\ManagedUserRepository.class
+com\usermanagement\app\service\EmailService.class
+com\usermanagement\app\service\ManagedUserService.class
+com\usermanagement\app\dto\UserRequestDTO.class
