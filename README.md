@@ -1,31 +1,42 @@
 User Management System
 
-This is a full-stack User Management System built using Spring Boot for backend and React Native Expo for frontend.
-The project is created mainly for learning, practice, and interview preparation.
+A full-stack User Management System built with Spring Boot (backend) and React Native Expo (frontend).
+The application provides secure authentication, OTP-based password recovery, and complete user management functionality.
 
-It allows an admin to manage users with secure authentication and password recovery using OTP.
+This project demonstrates real-world full-stack development practices and is suitable for learning and interview preparation.
 
-🌟 What this project does
+Features
+Authentication
 
-An admin can:
+Admin registration
 
-Register
+Admin login
 
-Login
+Forgot password with OTP
 
-Reset password using OTP
+Reset password with OTP validation
 
-Add users
+User Management
+
+Add user
 
 View user list
 
-Delete users
+Delete user
 
-View profile
+View admin profile
 
-The project focuses on clean UI, validation, and secure backend logic.
+Security & Validation
 
-🛠 Technologies Used
+Password encryption using BCrypt
+
+OTP expiry validation
+
+Name, email, and password validation
+
+Frontend and backend validation
+
+Technology Stack
 Backend
 
 Java
@@ -52,7 +63,7 @@ AsyncStorage
 
 Fetch API
 
-📂 Project Structure
+Project Structure
 user-management
 │
 ├── Backend
@@ -62,27 +73,30 @@ user-management
 │   └── expo
 │       └── UserManagementApp
 
-▶ How to Run Backend
+Backend Setup
 
-Open backend folder:
+Navigate to backend project:
 
 cd Backend/user-management
 
 
-Configure database in application.properties
+Configure database credentials in:
 
-Run:
+application.properties
+
+
+Run the backend:
 
 mvn spring-boot:run
 
 
-Backend will run on:
+Backend will start at:
 
 http://localhost:8082
 
-▶ How to Run Frontend
+Frontend Setup
 
-Open frontend folder:
+Navigate to frontend project:
 
 cd Frontend/expo/UserManagementApp
 
@@ -92,68 +106,64 @@ Install dependencies:
 npm install
 
 
-Start app:
+Start the application:
 
 npx expo start
 
-🔗 API Endpoints
-Method	API	Purpose
+API Endpoints
+Method	Endpoint	Description
 POST	/api/register	Register admin
 POST	/api/login	Login admin
 POST	/api/forgot-password	Send OTP
 POST	/api/reset-password	Reset password
 POST	/api/users/add	Add user
-GET	/api/users/list/{adminId}	Get user list
+GET	/api/users/list/{adminId}	List users
 DELETE	/api/users/delete/{id}	Delete user
-✅ Validations
+Validation Rules
 
-Name → only alphabets, max 50 characters
+Name: Alphabets only, maximum 50 characters
 
-Email → valid email format
+Email: Valid email format
 
-Password → strong password rule
+Password: Strong password required
 
-OTP → expiry validation
+OTP: Expires after defined time
 
-Frontend + backend both validate inputs
+All inputs validated on frontend and backend
 
-🧠 Why this project is good for interview
+Highlights
 
-This project demonstrates:
+Clean layered architecture (Controller, Service, Repository)
 
-Authentication flow
+Secure password handling
 
-OTP based password reset
+OTP based recovery flow
 
-CRUD operations
+Professional GitHub structure
 
-Secure password encryption
+Frontend-backend integration
 
-Frontend backend integration
+User-friendly UI
 
-Clean architecture
+Screens Implemented
 
-GitHub best practices
+Login
 
-📸 Screens in App
+Register
 
-Login Screen
+Forgot Password
 
-Register Screen
+Reset Password
 
-Forgot Password Screen
+User List
 
-Reset Password Screen
+Add User
 
-User List Screen
+Profile
 
-Add User Screen
-
-Profile Screen
-
-👨‍💻 Developer
+Developer
 
 Purvesh Sawalakhe
 
 GitHub:
-👉 https://github.com/Purvesh8762
+https://github.com/Purvesh8762
