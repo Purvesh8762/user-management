@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="4d337eb8-31f0-4ba9-983c-5e2b1e572c0f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Backend/user-management/src/main/java/com/usermanagement/app/config/CustomUserDetailsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/user-management/src/main/java/com/usermanagement/app/config/JwtFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/user-management/src/main/java/com/usermanagement/app/config/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/user-management/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/user-management/src/main/java/com/usermanagement/app/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/src/main/java/com/usermanagement/app/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/user-management/src/main/java/com/usermanagement/app/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/src/main/java/com/usermanagement/app/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/user-management/src/main/java/com/usermanagement/app/service/AuthUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/src/main/java/com/usermanagement/app/service/AuthUserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/user-management/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/user-management/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/user-management/target/classes/com/usermanagement/app/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/target/classes/com/usermanagement/app/config/SecurityConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/user-management/target/classes/com/usermanagement/app/controller/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/target/classes/com/usermanagement/app/controller/AuthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/user-management/target/classes/com/usermanagement/app/service/AuthUserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/target/classes/com/usermanagement/app/service/AuthUserService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/user-management/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/user-management/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/user-management/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/user-management/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/user-management/target/user-management-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/target/user-management-0.0.1-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/user-management/target/user-management-0.0.1-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/user-management/target/user-management-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Frontend/expo/UserManagementApp/expo-env.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/expo/UserManagementApp/expo-env.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-management/Frontend/expo/UserManagementApp/app/utils/storage.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,21 +35,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Purvesh8762"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Purvesh8762&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
     "url": "https://github.com/Purvesh8762/user-management.git",
-    "accountId": "1b3f15f2-ad0e-4512-97b3-6919f12848e5"
+    "accountId": "5fe7253d-f8f9-4713-9a17-1fd9dda54373"
   }
 }]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="389mJl9867IAzPNNTUlTWmoDsIe" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -39,17 +58,17 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true"
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Asus/OneDrive/Desktop/user-management",
+    "to.speed.mode.migration.done": "true"
   }
 }]]></component>
   <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="user-management" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="user-management" />
       <option name="ENV_FILES" value="" />
@@ -72,6 +91,19 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="user-management" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
