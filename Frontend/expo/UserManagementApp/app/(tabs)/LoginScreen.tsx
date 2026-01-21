@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  Platform,
   ActivityIndicator,
 } from "react-native";
 import { useState } from "react";
@@ -13,39 +12,30 @@ import { useRouter } from "expo-router";
 import {
   saveLoginEmail,
   saveAdminId,
-} from "../utils/storage";
+  saveToken,
+} from "../../utils/storage";
 
-// Backend API URL
-const API =
-  Platform.OS === "web"
-    ? "http://localhost:8082/api"
-    : "http://10.193.30.67:8082/api";
+const API = process.env.EXPO_PUBLIC_API_URL;
 
-// Expected backend response type
 type LoginResponse = {
   id: number;
   email: string;
+  token: string;
+  type: string;
 };
 
 export default function LoginScreen() {
   const router = useRouter();
 
-  // Input states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  // Password visibility state
   const [showPassword, setShowPassword] = useState(false);
-
-  // Loading state for button
   const [loading, setLoading] = useState(false);
 
-  // Handles login button click
   const login = async () => {
-    const e = email.trim();
+    const e = email.trim().toLowerCase();
     const p = password.trim();
 
-    // Validation: empty fields
     if (!e || !p) {
       Alert.alert("Validation Error", "Please enter email and password");
       return;
@@ -54,8 +44,7 @@ export default function LoginScreen() {
     try {
       setLoading(true);
 
-      // Call backend login API
-      const res = await fetch(`${API}/login`, {
+      const res = await fetch(`${API}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -66,22 +55,28 @@ export default function LoginScreen() {
 
       const text = await res.text();
 
-      // If backend returns error
       if (!res.ok) {
         Alert.alert("Login Failed", text || "Invalid email or password");
         return;
       }
 
-      // Convert response text to JSON
-      const data: LoginResponse = JSON.parse(text);
+      let data: LoginResponse;
 
-      // Save login info in local storage
+      try {
+        data = JSON.parse(text);
+      } catch {
+        Alert.alert("Error", "Invalid server response");
+        return;
+      }
+
       await saveLoginEmail(data.email);
       await saveAdminId(data.id);
 
+      // Always save as "Bearer token"
+      await saveToken(`${data.type} ${data.token}`);
+
       Alert.alert("Success", "Login successful");
 
-      // Navigate to user list screen
       router.replace("/(tabs)/UserListScreen");
     } catch {
       Alert.alert("Error", "Backend not reachable");
@@ -94,9 +89,7 @@ export default function LoginScreen() {
     <View style={styles.page}>
       <Text style={styles.title}>UserDesk Login</Text>
 
-      {/* CARD BOX */}
       <View style={styles.card}>
-        {/* Email Input */}
         <TextInput
           placeholder="Email"
           style={styles.input}
@@ -106,7 +99,6 @@ export default function LoginScreen() {
           keyboardType="email-address"
         />
 
-        {/* Password Input with Eye Icon */}
         <View style={styles.passwordBox}>
           <TextInput
             placeholder="Password"
@@ -116,17 +108,13 @@ export default function LoginScreen() {
             onChangeText={setPassword}
           />
 
-          {/* Toggle password visibility */}
-          <TouchableOpacity
-            onPress={() => setShowPassword(!showPassword)}
-          >
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Text style={styles.eye}>
               {showPassword ? "🙈" : "👁️"}
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Login Button */}
         <TouchableOpacity
           style={styles.btn}
           onPress={login}
@@ -139,14 +127,12 @@ export default function LoginScreen() {
           )}
         </TouchableOpacity>
 
-        {/* Navigate to Register */}
         <TouchableOpacity
           onPress={() => router.replace("/(tabs)/RegisterScreen")}
         >
           <Text style={styles.link}>New user? Register</Text>
         </TouchableOpacity>
 
-        {/* Navigate to Forgot Password */}
         <TouchableOpacity
           onPress={() => router.push("/(tabs)/ForgotPasswordScreen")}
         >
@@ -157,7 +143,6 @@ export default function LoginScreen() {
   );
 }
 
-// UI Styles
 const styles = StyleSheet.create({
   page: {
     flex: 1,

@@ -4,35 +4,26 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Platform,
   Alert,
 } from "react-native";
 import { useState } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
 
-// Backend API URL
-const API =
-  Platform.OS === "web"
-    ? "http://localhost:8082/api"
-    : "http://10.193.30.67:8082/api";
+const API = process.env.EXPO_PUBLIC_API_URL;
 
 export default function ResetPasswordScreen() {
-  // Get email from previous screen
   const params = useLocalSearchParams<{ email?: string }>();
-  const email = params.email ?? "";
+  const email = (params.email ?? "").toLowerCase();
 
-  // Input states
   const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Eye icon states
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const router = useRouter();
 
-  // Check if passwords match
   const passwordsMatch =
     password.length > 0 &&
     confirmPassword.length > 0 &&
@@ -56,27 +47,31 @@ export default function ResetPasswordScreen() {
     }
 
     try {
-      const res = await fetch(
-        `${API}/reset-password?email=${encodeURIComponent(
-          email
-        )}&otp=${encodeURIComponent(otp.trim())}&newPassword=${encodeURIComponent(
-          password.trim()
-        )}`,
-        { method: "POST" }
-      );
+      const res = await fetch(`${API}/api/auth/reset-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          otp: otp.trim(),
+          newPassword: password.trim(),
+        }),
+      });
 
       const msg = await res.text();
 
-      if (res.ok) {
-        Alert.alert("Success", msg, [
-          {
-            text: "OK",
-            onPress: () => router.replace("/(tabs)/LoginScreen"),
-          },
-        ]);
-      } else {
+      if (!res.ok) {
         Alert.alert("Error", msg || "Password not reset");
+        return;
       }
+
+      Alert.alert("Success", msg, [
+        {
+          text: "OK",
+          onPress: () => router.replace("/(tabs)/LoginScreen"),
+        },
+      ]);
     } catch {
       Alert.alert("Error", "Backend not reachable");
     }
@@ -86,9 +81,7 @@ export default function ResetPasswordScreen() {
     <View style={styles.page}>
       <Text style={styles.title}>Reset Password</Text>
 
-      {/* CARD BOX */}
       <View style={styles.card}>
-        {/* OTP */}
         <TextInput
           placeholder="Enter OTP"
           style={styles.input}
@@ -97,7 +90,6 @@ export default function ResetPasswordScreen() {
           keyboardType="numeric"
         />
 
-        {/* New Password */}
         <View style={styles.passwordBox}>
           <TextInput
             placeholder="New Password"
@@ -111,7 +103,6 @@ export default function ResetPasswordScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Confirm Password */}
         <View style={styles.passwordBox}>
           <TextInput
             placeholder="Re-enter Password"
@@ -121,9 +112,7 @@ export default function ResetPasswordScreen() {
             onChangeText={setConfirmPassword}
           />
           <TouchableOpacity
-            onPress={() =>
-              setShowConfirmPassword(!showConfirmPassword)
-            }
+            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
           >
             <Text style={styles.eye}>
               {showConfirmPassword ? "🙈" : "👁️"}
@@ -131,7 +120,6 @@ export default function ResetPasswordScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Password match indicator */}
         {password.length > 0 && confirmPassword.length > 0 && (
           <Text
             style={{
@@ -146,7 +134,6 @@ export default function ResetPasswordScreen() {
           </Text>
         )}
 
-        {/* Reset Button */}
         <TouchableOpacity
           style={[
             styles.btn,
@@ -162,7 +149,6 @@ export default function ResetPasswordScreen() {
   );
 }
 
-// UI styles
 const styles = StyleSheet.create({
   page: {
     flex: 1,

@@ -1,17 +1,23 @@
 package com.usermanagement.app.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "login_users")
+@Table(
+        name = "login_users",
+        indexes = {
+                @Index(name = "idx_email", columnList = "email")
+        }
+)
 public class LoginUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Admin email (unique and required)
+    // Admin email (stored lowercase, unique)
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
@@ -20,17 +26,22 @@ public class LoginUser {
     private String name;
 
     // Encrypted password
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
-    // OTP for password reset
+    // Role (ADMIN by default)
+    @Column(nullable = false, length = 20)
+    private String role = "ADMIN";
+
+    // OTP
     @Column(length = 6)
     private String otp;
 
-    // OTP expiry time
+    // OTP expiry
     private LocalDateTime otpExpiry;
 
-    //Getters and Setters
+    // ---------------- GETTERS & SETTERS ----------------
 
     public Long getId() {
         return id;
@@ -44,8 +55,9 @@ public class LoginUser {
         return email;
     }
 
+    // Always store email lowercase
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.toLowerCase();
     }
 
     public String getName() {
@@ -60,9 +72,17 @@ public class LoginUser {
         return password;
     }
 
-    // Password is always stored in encrypted format
+    // Password must always be encrypted before saving
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getOtp() {

@@ -2,33 +2,51 @@ package com.usermanagement.app.config;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    // Secret key used to sign JWT (keep it safe in real projects)
-    private final String SECRET = "MyJwtSecretKeyMyJwtSecretKey12345";
+    private static final String SECRET = "MyJwtSecretKeyForUserManagementApplication2026@SecureKey";
+    private static final long EXPIRATION = 1000 * 60 * 60 * 24; // 24 hours
 
-    // Create JWT token for user email
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    }
+
     public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(email)                 // who is this token for
-                .setIssuedAt(new Date())           // token creation time
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day expiry
-                .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()), SignatureAlgorithm.HS256)
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // Read email from JWT token
     public String extractEmail(String token) {
+        return parseClaims(token).getSubject();
+    }
+
+    public boolean validateToken(String token, UserDetails userDetails) {
+        return extractEmail(token).equals(userDetails.getUsername())
+                && !isExpired(token);
+    }
+
+    private boolean isExpired(String token) {
+        return parseClaims(token).getExpiration().before(new Date());
+    }
+
+    private Claims parseClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                .setSigningKey(getSigningKey())
+                .setAllowedClockSkewSeconds(60)
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
     }
 }

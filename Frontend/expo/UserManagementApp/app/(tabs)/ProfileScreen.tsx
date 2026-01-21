@@ -6,55 +6,68 @@ import {
 } from "react-native";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import { getLoginEmail } from "../utils/storage";
+import {
+  getLoginEmail,
+  getToken,
+  clearStorage,
+} from "../../utils/storage";
+
 
 export default function ProfileScreen() {
   const router = useRouter();
 
-  // Store logged-in admin email
   const [email, setEmail] = useState<string | null>(null);
 
-  // Load email when screen opens
   useEffect(() => {
     load();
   }, []);
 
   const load = async () => {
     const e = await getLoginEmail();
+    const token = await getToken();
+
+    if (!e || !token) {
+      await clearStorage();
+      router.replace("/(tabs)/LoginScreen");
+      return;
+    }
+
     setEmail(e);
+  };
+
+  const logout = async () => {
+    await clearStorage();
+    router.replace("/(tabs)/LoginScreen");
   };
 
   return (
     <View style={styles.page}>
-      {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() =>
-            router.replace("/(tabs)/UserListScreen")
-          }
+          onPress={() => router.replace("/(tabs)/UserListScreen")}
         >
           <Text style={styles.back}>←</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Profile</Text>
       </View>
 
-      {/* BODY */}
       <View style={styles.body}>
-        {/* Avatar with first letter of email */}
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>
             {(email || "U").charAt(0).toUpperCase()}
           </Text>
         </View>
 
-        {/* Display email */}
         <Text style={styles.email}>{email}</Text>
+
+        <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 }
 
-// UI styles
 const styles = StyleSheet.create({
   page: { flex: 1, backgroundColor: "#9fd3d6" },
 
@@ -100,6 +113,20 @@ const styles = StyleSheet.create({
   },
 
   email: {
+    fontSize: 16,
+    marginBottom: 25,
+  },
+
+  logoutBtn: {
+    backgroundColor: "red",
+    paddingHorizontal: 25,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+
+  logoutText: {
+    color: "white",
+    fontWeight: "bold",
     fontSize: 16,
   },
 });

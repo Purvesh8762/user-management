@@ -15,13 +15,19 @@ public class ManagedUserService {
         this.repo = repo;
     }
 
-
     // Add a new user under a specific admin
     public ManagedUser addUser(String name, String email, Long adminId){
 
-        // Optional check to avoid duplicate email
-        if(repo.findByEmail(email).isPresent()){
-            throw new RuntimeException("User email already exists");
+        if(name == null || name.trim().isEmpty()){
+            throw new RuntimeException("Name is required");
+        }
+
+        if(email == null || email.trim().isEmpty()){
+            throw new RuntimeException("Email is required");
+        }
+
+        if(repo.existsByEmailIgnoreCaseAndAdminId(email, adminId)){
+            throw new RuntimeException("User email already exists for this admin");
         }
 
         ManagedUser user = new ManagedUser();
@@ -37,14 +43,16 @@ public class ManagedUserService {
         return repo.findByAdminId(adminId);
     }
 
+    // Delete user by id (only under same admin)
+    public void deleteUser(Long id, Long adminId){
 
-    // Delete user by id
-    public void deleteUser(Long id){
+        ManagedUser user = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if(!repo.existsById(id)){
-            throw new RuntimeException("User not found");
+        if(!user.getAdminId().equals(adminId)){
+            throw new RuntimeException("Unauthorized delete attempt");
         }
 
-        repo.deleteById(id);
+        repo.delete(user);
     }
 }

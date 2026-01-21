@@ -1,4 +1,5 @@
 com\usermanagement\app\config\SecurityConfig.class
+com\usermanagement\app\service\CustomUserDetailsService.class
 com\usermanagement\app\service\AuthUserService.class
 com\usermanagement\app\exception\GlobalExceptionHandler.class
 com\usermanagement\app\config\JwtUtil.class
@@ -9,7 +10,6 @@ com\usermanagement\app\controller\AuthController.class
 com\usermanagement\app\UserManagementApplication.class
 com\usermanagement\app\repository\LoginUserRepository.class
 com\usermanagement\app\repository\ManagedUserRepository.class
-com\usermanagement\app\config\CustomUserDetailsService.class
 com\usermanagement\app\service\EmailService.class
 com\usermanagement\app\service\ManagedUserService.class
 com\usermanagement\app\config\JwtFilter.class

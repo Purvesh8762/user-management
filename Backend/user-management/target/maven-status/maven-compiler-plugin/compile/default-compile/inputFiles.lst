@@ -11,6 +11,6 @@ C:\Users\Asus\OneDrive\Desktop\user-management\Backend\user-management\src\main\
 C:\Users\Asus\OneDrive\Desktop\user-management\Backend\user-management\src\main\java\com\usermanagement\app\entity\LoginUser.java
 C:\Users\Asus\OneDrive\Desktop\user-management\Backend\user-management\src\main\java\com\usermanagement\app\controller\AuthController.java
 C:\Users\Asus\OneDrive\Desktop\user-management\Backend\user-management\src\main\java\com\usermanagement\app\entity\ManagedUser.java
-C:\Users\Asus\OneDrive\Desktop\user-management\Backend\user-management\src\main\java\com\usermanagement\app\config\CustomUserDetailsService.java
 C:\Users\Asus\OneDrive\Desktop\user-management\Backend\user-management\src\main\java\com\usermanagement\app\repository\ManagedUserRepository.java
+C:\Users\Asus\OneDrive\Desktop\user-management\Backend\user-management\src\main\java\com\usermanagement\app\service\CustomUserDetailsService.java
 C:\Users\Asus\OneDrive\Desktop\user-management\Backend\user-management\src\main\java\com\usermanagement\app\repository\LoginUserRepository.java

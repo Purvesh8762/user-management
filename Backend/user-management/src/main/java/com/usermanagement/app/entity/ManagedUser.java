@@ -3,7 +3,12 @@ package com.usermanagement.app.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "managed_users")
+@Table(
+        name = "managed_users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"email","admin_id"})
+        }
+)
 public class ManagedUser {
 
     @Id
@@ -14,15 +19,15 @@ public class ManagedUser {
     @Column(nullable = false, length = 100)
     private String name;
 
-    // User email (unique)
-    @Column(nullable = false, unique = true, length = 100)
+    // User email
+    @Column(nullable = false, length = 100)
     private String email;
 
     // Admin who created this user
-    @Column(nullable = false)
+    @Column(name = "admin_id", nullable = false)
     private Long adminId;
 
-    // Getters and Setters
+    // ---------------- GETTERS & SETTERS ----------------
 
     public Long getId() {
         return id;
@@ -44,8 +49,9 @@ public class ManagedUser {
         return email;
     }
 
+    // Always store email lowercase
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.toLowerCase();
     }
 
     public Long getAdminId() {

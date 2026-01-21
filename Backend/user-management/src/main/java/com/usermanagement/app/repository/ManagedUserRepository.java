@@ -10,9 +10,12 @@ import java.util.Optional;
 @Repository
 public interface ManagedUserRepository extends JpaRepository<ManagedUser, Long> {
 
-    // Find managed user by email
-    Optional<ManagedUser> findByEmail(String email);
+    // Case-insensitive email under admin
+    Optional<ManagedUser> findByEmailIgnoreCaseAndAdminId(String email, Long adminId);
 
-    // Get all users under a specific admin
+    // Check duplicate under admin
+    boolean existsByEmailIgnoreCaseAndAdminId(String email, Long adminId);
+
+    // List users for admin
     List<ManagedUser> findByAdminId(Long adminId);
 }

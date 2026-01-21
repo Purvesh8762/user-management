@@ -12,18 +12,16 @@ import {
 import { useRef, useState, useCallback } from "react";
 import { useRouter, useFocusEffect } from "expo-router";
 import {
-  clearLoginEmail,
+  clearStorage,
   getLoginEmail,
-  getAdminId,
-} from "../utils/storage";
+  getToken,
+} from "../../utils/storage";
 
-// Backend API
-const API = "http://10.193.30.67:8082/api";
 
-// Screen width for sidebar animation
+const API = process.env.EXPO_PUBLIC_API_URL;
+
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-// User object type
 type User = {
   id: number;
   name: string;
@@ -32,69 +30,78 @@ type User = {
 
 export default function UserListScreen() {
   const router = useRouter();
-
-  // Sidebar animation value
   const slideAnim = useRef(new Animated.Value(-SCREEN_WIDTH)).current;
 
-  // UI states
   const [showSidebar, setShowSidebar] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
   const [users, setUsers] = useState<User[]>([]);
 
-  // Reload users whenever screen is focused
   useFocusEffect(
     useCallback(() => {
       loadUsers();
     }, [])
   );
 
-  // Load users from backend
   const loadUsers = async () => {
-    const adminId = await getAdminId();
+    const token = await getToken();
 
-    if (!adminId) {
+    if (!token) {
       router.replace("/(tabs)/LoginScreen");
       return;
     }
 
     try {
-      const res = await fetch(`${API}/users/list/${adminId}`);
-      const data = await res.json();
+      const res = await fetch(`${API}/api/auth/users/list`, {
+        headers: {
+          Authorization: token, // already contains Bearer
+        },
+      });
 
-      // Ensure array response
+      if (!res.ok) {
+        await clearStorage();
+        router.replace("/(tabs)/LoginScreen");
+        return;
+      }
+
+      const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
     } catch {
       Alert.alert("Error", "Unable to load users");
     }
   };
 
-  // Confirm delete popup
-  const confirmDelete = (id: number) => {
-    Alert.alert(
-      "Delete User",
-      "Are you sure you want to delete this user?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Delete", style: "destructive", onPress: () => deleteUser(id) },
-      ]
-    );
-  };
-
-  // Delete user API call
   const deleteUser = async (id: number) => {
+    const token = await getToken();
+
+    if (!token) return;
+
     try {
-      await fetch(`${API}/users/delete/${id}`, {
+      const res = await fetch(`${API}/api/auth/users/delete/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: token,
+        },
       });
 
-      Alert.alert("Success", "User deleted successfully");
+      if (!res.ok) {
+        Alert.alert("Error", "Delete failed");
+        return;
+      }
+
+      Alert.alert("Success", "User deleted");
       loadUsers();
     } catch {
-      Alert.alert("Error", "Unable to delete user");
+      Alert.alert("Error", "Delete failed");
     }
   };
 
-  // Open sidebar
+  const confirmDelete = (id: number) => {
+    Alert.alert("Delete User", "Are you sure?", [
+      { text: "Cancel" },
+      { text: "Delete", style: "destructive", onPress: () => deleteUser(id) },
+    ]);
+  };
+
   const openSidebar = async () => {
     const e = await getLoginEmail();
     setEmail(e);
@@ -107,7 +114,6 @@ export default function UserListScreen() {
     }).start();
   };
 
-  // Close sidebar
   const closeSidebar = () => {
     Animated.timing(slideAnim, {
       toValue: -SCREEN_WIDTH,
@@ -116,15 +122,13 @@ export default function UserListScreen() {
     }).start(() => setShowSidebar(false));
   };
 
-  // Logout admin
   const logout = async () => {
-    await clearLoginEmail();
+    await clearStorage();
     router.replace("/(tabs)/LoginScreen");
   };
 
   return (
     <View style={styles.page}>
-      {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity onPress={openSidebar}>
           <Text style={styles.menu}>☰</Text>
@@ -132,7 +136,6 @@ export default function UserListScreen() {
         <Text style={styles.title}>User List</Text>
       </View>
 
-      {/* USER LIST */}
       <FlatList
         data={users}
         keyExtractor={(item) => item.id.toString()}
@@ -158,7 +161,6 @@ export default function UserListScreen() {
         )}
       />
 
-      {/* ADD USER BUTTON */}
       <TouchableOpacity
         style={styles.floatingBtn}
         onPress={() => router.push("/(tabs)/AddUserScreen")}
@@ -166,13 +168,10 @@ export default function UserListScreen() {
         <Text style={styles.floatingBtnText}>➕ Add User</Text>
       </TouchableOpacity>
 
-      {/* SIDEBAR */}
       {showSidebar && (
         <>
-          {/* Dark overlay */}
           <Pressable style={styles.overlay} onPress={closeSidebar} />
 
-          {/* Sliding sidebar */}
           <Animated.View style={[styles.sidebar, { left: slideAnim }]}>
             <View style={styles.profileBox}>
               <View style={styles.avatar}>
@@ -183,7 +182,6 @@ export default function UserListScreen() {
               <Text style={styles.profileEmail}>{email}</Text>
             </View>
 
-            {/* Profile */}
             <TouchableOpacity
               style={styles.menuItem}
               onPress={() => {
@@ -194,18 +192,6 @@ export default function UserListScreen() {
               <Text style={styles.menuText}>👤 Profile</Text>
             </TouchableOpacity>
 
-            {/* Register another account */}
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => {
-                closeSidebar();
-                router.replace("/(tabs)/RegisterScreen");
-              }}
-            >
-              <Text style={styles.menuText}>➕ Add Another Account</Text>
-            </TouchableOpacity>
-
-            {/* Logout */}
             <TouchableOpacity style={styles.menuItem} onPress={logout}>
               <Text style={[styles.menuText, { color: "red" }]}>
                 🚪 Logout
@@ -218,20 +204,16 @@ export default function UserListScreen() {
   );
 }
 
-// UI styles
 const styles = StyleSheet.create({
   page: { flex: 1, backgroundColor: "#9fd3d6" },
-
   header: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#1e90ff",
     padding: 15,
   },
-
   menu: { fontSize: 24, color: "white", marginRight: 15 },
   title: { fontSize: 20, color: "white", fontWeight: "bold" },
-
   card: {
     backgroundColor: "white",
     padding: 10,
@@ -241,21 +223,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-
-  text: { fontSize: 14, flex: 1, marginRight: 10 },
-
+  text: { fontSize: 14, flex: 1 },
   deleteBtn: {
     backgroundColor: "red",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
   },
-
-  deleteText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-
+  deleteText: { color: "white", fontWeight: "bold" },
   floatingBtn: {
     position: "absolute",
     bottom: 25,
@@ -265,13 +240,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 30,
   },
-
-  floatingBtnText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-
+  floatingBtnText: { color: "white", fontWeight: "bold", fontSize: 16 },
   overlay: {
     position: "absolute",
     top: 0,
@@ -279,9 +248,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: "rgba(0,0,0,0.3)",
-    zIndex: 10,
   },
-
   sidebar: {
     position: "absolute",
     top: 0,
@@ -289,14 +256,8 @@ const styles = StyleSheet.create({
     width: "70%",
     backgroundColor: "white",
     padding: 20,
-    zIndex: 20,
   },
-
-  profileBox: {
-    alignItems: "center",
-    marginBottom: 30,
-  },
-
+  profileBox: { alignItems: "center", marginBottom: 30 },
   avatar: {
     width: 70,
     height: 70,
@@ -304,27 +265,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#1e90ff",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10,
   },
-
-  avatarText: {
-    color: "white",
-    fontSize: 26,
-    fontWeight: "bold",
-  },
-
-  profileEmail: {
-    fontSize: 13,
-    color: "#666",
-  },
-
+  avatarText: { color: "white", fontSize: 26, fontWeight: "bold" },
+  profileEmail: { fontSize: 13, color: "#666" },
   menuItem: {
     paddingVertical: 15,
     borderBottomWidth: 1,
     borderColor: "#eee",
   },
-
-  menuText: {
-    fontSize: 16,
-  },
+  menuText: { fontSize: 16 },
 });
